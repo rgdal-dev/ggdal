@@ -1,2 +1,7 @@
 ^ggdal\.Rproj$
 ^\.Rproj\.user$
+^CODE_OF_CONDUCT\.md$
+^README\.Rmd$
+^tryout.R$
+^\.github$
+^LICENSE\.md$

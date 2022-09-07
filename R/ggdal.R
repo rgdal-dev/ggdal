@@ -1,5 +1,8 @@
 
 #' @export
+#' @importFrom vapour vapour_raster_info vapour_warp_raster vapour_vrt
+#' @importFrom palr d_pal
+#' @importFrom grDevices dev.size hcl.colors
 gdal_get <- function(x, dm = NULL, ..., extent = NULL, projection = NULL) {
   info <- vapour::vapour_raster_info(x)
   if (diff(info$extent)[3] < 0) {
@@ -13,13 +16,14 @@ gdal_get <- function(x, dm = NULL, ..., extent = NULL, projection = NULL) {
        info = info), class = c("gdal-data", "gdal", "list"))
 }
 #' @export
-print.gdal <- function(x) {
+print.gdal <- function(x, ...) {
   print(x$info$dimension)
   print(x$info$extent)
   print(sprintf("hasdata: %s", as.character(!is.null(x$data))))
 }
 
 #' @export
+#' @importFrom grDevices as.raster
 as.raster.gdal <- function(x, ...) {
   out <- x$data
   if (!is.character(out)) {
@@ -30,7 +34,9 @@ as.raster.gdal <- function(x, ...) {
 }
 
 
-# INTERNAL HELPER THAT BUILDS THE GROBS FOR GeomFromPath and element_path
+# INTERNAL HELPER THAT BUILDS THE GROBS FOR GeomFromGDAL - ripped off from ggpath
+#' @importFrom grid rasterGrob viewport unit
+#' @importFrom rlang caller_env
 build_gdal_grobs <- function(i, alpha, colour, gdal, px, py, resample, data,
                         is_theme_element = FALSE,
                         call = rlang::caller_env()) {
