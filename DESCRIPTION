@@ -3,10 +3,12 @@ Title: GDAL Rendering for 'ggplot2'
 Version: 0.0.0.9000
 Authors@R: 
     person("Michael D.", "Sumner", , "mdsumner@gmail.com", role = c("aut", "cre"))
-Description:  A 'ggplot2' extension that enables image grobs from GDAL data source strings
+Description: A 'ggplot2' extension that enables image grobs from GDAL data source strings
  (DSN) in 'ggplot2'. Ruthlessly ripped off from 'ggpath'. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: es
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+URL: https://github.com/hypertidy/ggdal
+BugReports: https://github.com/hypertidy/ggdal/issues
