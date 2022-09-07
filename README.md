@@ -10,6 +10,11 @@
 
 The goal of ggdal is to …
 
+This is really just an experiment, it’s very unclear to me if the gg-way
+really fits the GDAL warper, but i’m going to try because a graphics
+device should send messages to the GDAL library and not need a human
+intermediary.
+
 ## Installation
 
 You can install the development version of ggdal from
@@ -22,8 +27,10 @@ devtools::install_github("hypertidy/ggdal")
 
 # TODO
 
--\[ \] make useful -\[ \] use the extent from gdal info -\[ \] look at
-crs, use of coord_sf or can we just ggplot2 more basic
+-   make useful
+-   use the extent from gdal info, consider xmin, xmax, ymin, ymax aes?
+-   look at crs, use of coord_sf or can we just ggplot2 more basic
+-   probably, use coord_sf to set the grain and extent and crs …
 
 ## Example
 

@@ -1,5 +1,5 @@
 
-#' @export
+
 #' @importFrom vapour vapour_raster_info vapour_warp_raster vapour_vrt
 #' @importFrom palr d_pal
 #' @importFrom grDevices dev.size hcl.colors
@@ -78,8 +78,55 @@ build_gdal_grobs <- function(i, alpha, colour, gdal, px, py, resample, data,
 }
 
 
-#' @rdname ggdal-package
+
+#' ggplot2 Layer for Visualizing Images from GDAL sources (file path, URLs, database connection strings, VRT text in memory, etc. )
+#'
+#' @description This geom is used to plot raster data from a GDAL source
+#'   of points in a ggplot. Currently requeires x,y aesthetics as well as a gdal DSN, but generally these can
+#' obtained from the source, and a graphics device can dictate that the GDAL warper provides the data in a given
+#' extent ....
+#'
+#' @inheritParams ggplot2::geom_point
+#' @section Aesthetics:
+#' `geom_from_gdal()` understands the following aesthetics (required aesthetics are in bold):
+#'  FIXME: px, py, resample, etc - do we want to have this graphics placement or totally override with xmin, xmax, ymin, ymax, etc
+#' \itemize{
+#'   \item{**x**}{ - The x-coordinate.}
+#'   \item{**y**}{ - The y-coordinate.}
+#'   \item{**path**}{ - a file path, url, raster object or bitmap array. See [`magick::image_read()`] for further information.}
+#'   \item{`alpha = NULL`}{ - The alpha channel, i.e. transparency level, as a numerical value between 0 and 1.}
+#'   \item{`colour = NULL`}{ - The image will be colorized with this colour. Use the special character `"b/w"` to set it to black and white. For more information on valid colour names in ggplot2 see <https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=colour#colour-and-fill>}
+#'   \item{`angle = 0`}{ - The angle of the image as a numerical value between 0° and 360°.}
+#'   \item{`hjust = 0.5`}{ - The horizontal adjustment relative to the given x coordinate. Must be a numerical value between 0 and 1.}
+#'   \item{`vjust = 0.5`}{ - The vertical adjustment relative to the given y coordinate. Must be a numerical value between 0 and 1.}
+#'   \item{`width = 1.0`}{ - The desired width of the image in `npc` (Normalised Parent Coordinates).
+#'                           The default value is set to 1.0 which is *big* but it is necessary
+#'                           because all used values are computed relative to the default.
+#'                           A typical size is `width = 0.1` (see below examples).}
+#'   \item{`height = 1.0`}{ - The desired height of the image in `npc` (Normalised Parent Coordinates).
+#'                            The default value is set to 1.0 which is *big* but it is necessary
+#'                            because all used values are computed relative to the default.
+#'                            A typical size is `height = 0.1` (see below examples).}
+#' }
+#' @param ... Other arguments passed on to [ggplot2::layer()]. These are
+#'   often aesthetics, used to set an aesthetic to a fixed value. See the below
+#'   section "Aesthetics" for a full list of possible arguments.
+#' @return A ggplot2 layer ([ggplot2::layer()]) that can be added to a plot
+#'   created with [ggplot2::ggplot()].
 #' @export
+#' @examples
+#' library(ggplot2)
+#' library(ggdal)
+#' ## R logo file shipped with ggpath
+#' dsn <- system.file("r_logo.png", package = "ggpath")
+#' #create dataframe with x-y-coordinates and the above gdal source
+#' plot_data <- data.frame(x = 0, y = c(-1, 1), gdal = dsn, px = 18, py = 18,
+#'   resample = c("near", "cubic"))
+#' # plot images directly from local path, with vectorized resampling method invoked by GDAL itself
+#' ggplot(plot_data, aes(x = x, y = y, px = px, py = py, resample = resample)) +
+#'   geom_from_gdal(aes(gdal = gdal), width = 0.3, height = .3) +
+#'   coord_cartesian(xlim = c(-1, 1), ylim = c(-2, 2)) +
+#'   theme_minimal()
 geom_from_gdal <- function(mapping = NULL, data = NULL,
                            stat = "identity", position = "identity",
                            ...,
@@ -102,7 +149,7 @@ geom_from_gdal <- function(mapping = NULL, data = NULL,
   )
 }
 
-#' @rdname ggdal-package
+#' @name ggdal-package
 #' @export
 GeomFromGDAL <- ggplot2::ggproto(
   "GeomFromGDAL", ggplot2::Geom,

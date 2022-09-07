@@ -3,7 +3,6 @@
 S3method(as.raster,gdal)
 S3method(print,gdal)
 export(GeomFromGDAL)
-export(gdal_get)
 export(geom_from_gdal)
 importFrom(grDevices,as.raster)
 importFrom(grDevices,dev.size)
