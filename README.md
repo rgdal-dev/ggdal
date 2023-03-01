@@ -8,12 +8,7 @@
 [![R-CMD-check](https://github.com/hypertidy/ggdal/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hypertidy/ggdal/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of ggdal is to …
-
-This is really just an experiment, it’s very unclear to me if the gg-way
-really fits the GDAL warper, but i’m going to try because a graphics
-device should send messages to the GDAL library and not need a human
-intermediary.
+The goal of ggdal is to get background image data for ggplot2.
 
 ## Installation
 
@@ -25,21 +20,37 @@ You can install the development version of ggdal from
 devtools::install_github("hypertidy/ggdal")
 ```
 
-# TODO
+# Example
 
--   make useful
--   use the extent from gdal info, consider xmin, xmax, ymin, ymax aes?
--   look at crs, use of coord_sf or can we just ggplot2 more basic
--   probably, use coord_sf to set the grain and extent and crs …
+Use ‘dsn = “osm”’ or “virtualearth”, or input custom (WIP).
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+Use any map projection. Currently examples only provided for use with sf
+objects, WIP.
 
 ``` r
+library(ggplot2)
 library(ggdal)
-## basic example code
+data(iw)
+
+ggplot() +
+  annotation_gdal(dsn = "osm") +
+  geom_sf(data = sf::st_transform(iw, "EPSG:3577"), fill = NA, col = "grey50")
 ```
+
+<img src="man/figures/README-example-1.png" width="100%" />
+
+``` r
+
+
+ggplot() +
+  annotation_gdal(dsn = "virtualearth") +
+  geom_sf(data = sfdct::antarctica, fill = NA, col = "grey50") + coord_sf(xlim = c(-6378137, 6378137), 
+                                                                          ylim = c(-6378137, 6378137))
+#> old-style crs object detected; please recreate object with a recent sf::st_crs()
+#> old-style crs object detected; please recreate object with a recent sf::st_crs()
+```
+
+<img src="man/figures/README-example-2.png" width="100%" />
 
 ## Code of Conduct
 

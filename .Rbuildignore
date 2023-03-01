@@ -5,3 +5,5 @@
 ^tryout.R$
 ^\.github$
 ^LICENSE\.md$
+^data-raw$
+^gdalwmscache$

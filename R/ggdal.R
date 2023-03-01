@@ -2,6 +2,7 @@
 
 #' @importFrom vapour vapour_raster_info vapour_warp_raster vapour_vrt
 #' @importFrom palr d_pal
+#' @rdname ggdal-deprecated
 #' @importFrom grDevices dev.size hcl.colors
 gdal_get <- function(x, dm = NULL, ..., extent = NULL, projection = NULL) {
   info <- vapour::vapour_raster_info(x)
@@ -15,16 +16,18 @@ gdal_get <- function(x, dm = NULL, ..., extent = NULL, projection = NULL) {
   structure(list(data = matrix(data, dm[2L], byrow = TRUE),
        info = info), class = c("gdal-data", "gdal", "list"))
 }
+#' @rdname ggdal-deprecated
 #' @export
 print.gdal <- function(x, ...) {
   print(x$info$dimension)
   print(x$info$extent)
   print(sprintf("hasdata: %s", as.character(!is.null(x$data))))
 }
-
+#' @rdname ggdal-deprecated
 #' @export
 #' @importFrom grDevices as.raster
 as.raster.gdal <- function(x, ...) {
+  .Deprecated("annotation_gdal")
   out <- x$data
   if (!is.character(out)) {
     out <- array(palr::image_pal(x$data, ...), dim(x$data)[1L])
@@ -93,7 +96,7 @@ build_gdal_grobs <- function(i, alpha, colour, gdal, px, py, resample, data,
 #' \itemize{
 #'   \item{**x**}{ - The x-coordinate.}
 #'   \item{**y**}{ - The y-coordinate.}
-#'   \item{**path**}{ - a file path, url, raster object or bitmap array. See [`magick::image_read()`] for further information.}
+#'   \item{**path**}{ - a file path, url, raster object or bitmap array.}
 #'   \item{`alpha = NULL`}{ - The alpha channel, i.e. transparency level, as a numerical value between 0 and 1.}
 #'   \item{`colour = NULL`}{ - The image will be colorized with this colour. Use the special character `"b/w"` to set it to black and white. For more information on valid colour names in ggplot2 see <https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=colour#colour-and-fill>}
 #'   \item{`angle = 0`}{ - The angle of the image as a numerical value between 0° and 360°.}
@@ -113,20 +116,8 @@ build_gdal_grobs <- function(i, alpha, colour, gdal, px, py, resample, data,
 #'   section "Aesthetics" for a full list of possible arguments.
 #' @return A ggplot2 layer ([ggplot2::layer()]) that can be added to a plot
 #'   created with [ggplot2::ggplot()].
+#' @rdname ggdal-deprecated
 #' @export
-#' @examples
-#' library(ggplot2)
-#' library(ggdal)
-#' ## R logo file shipped with ggpath
-#' dsn <- system.file("r_logo.png", package = "ggpath")
-#' #create dataframe with x-y-coordinates and the above gdal source
-#' plot_data <- data.frame(x = 0, y = c(-1, 1), gdal = dsn, px = 18, py = 18,
-#'   resample = c("near", "cubic"))
-#' # plot images directly from local path, with vectorized resampling method invoked by GDAL itself
-#' ggplot(plot_data, aes(x = x, y = y, px = px, py = py, resample = resample)) +
-#'   geom_from_gdal(aes(gdal = gdal), width = 0.3, height = .3) +
-#'   coord_cartesian(xlim = c(-1, 1), ylim = c(-2, 2)) +
-#'   theme_minimal()
 geom_from_gdal <- function(mapping = NULL, data = NULL,
                            stat = "identity", position = "identity",
                            ...,
@@ -134,6 +125,7 @@ geom_from_gdal <- function(mapping = NULL, data = NULL,
                            show.legend = FALSE,
                            inherit.aes = TRUE) {
 
+  .Deprecated("annotation_gdal")
   ggplot2::layer(
     data = data,
     mapping = mapping,
