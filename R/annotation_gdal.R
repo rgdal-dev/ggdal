@@ -7,6 +7,11 @@
   "<GDAL_WMS><Service name=\"VirtualEarth\"><ServerUrl>http://a${server_num}.ortho.tiles.virtualearth.net/tiles/a${quadkey}.jpeg?g=90</ServerUrl></Service><MaxConnections>4</MaxConnections><Cache/></GDAL_WMS>"
 }
 
+#' @export
+#' @name annotation_gdal
+arcgis_mapserver_imgery <- function() {
+  "<GDAL_WMS><Service name=\"TMS\"><ServerUrl>http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${z}/${y}/${x}</ServerUrl></Service><DataWindow><UpperLeftX>-20037508.34</UpperLeftX><UpperLeftY>20037508.34</UpperLeftY><LowerRightX>20037508.34</LowerRightX><LowerRightY>-20037508.34</LowerRightY><TileLevel>17</TileLevel><TileCountX>1</TileCountX><TileCountY>1</TileCountY><YOrigin>top</YOrigin></DataWindow><Projection>EPSG:900913</Projection><BlockSizeX>256</BlockSizeX><BlockSizeY>256</BlockSizeY><BandsCount>3</BandsCount><MaxConnections>10</MaxConnections><Cache /></GDAL_WMS>"
+}
 #' Add background imagery
 #'
 #' Uses OpenStreetMap or VirtualEarth to add background imagery, or a custom source via 'dsn'.
@@ -18,6 +23,7 @@
 #' @param dsn The map source (currently 'osm' or 'virtualearth' are built-in - whatarelief streetmap, or imagery, otherwise use a GDAL DSN)
 #' @param interpolate Passed to [grid::rasterGrob()]
 #' @param alpha Use to make this layer semi-transparent
+#' @param resample resample algorithm for the GDAL warper
 #' @param data,mapping Specify data and mapping to use this geom with facets
 #'
 #' @return A ggplot2 layer
@@ -25,6 +31,7 @@
 #' @importFrom whatarelief imagery
 #' @importFrom scales alpha
 #' @importFrom grDevices as.raster rgb col2rgb
+#' @importFrom grid rasterGrob
 #' @examples
 #' \donttest{
 #' library(ggplot2)
@@ -39,7 +46,7 @@
 #'   geom_sf(data = iw, fill = NA, col = "grey50")
 #'
 #'
-#' pts <- do.call(cbind, maps::map(plot = F)[1:2])
+#' pts <- do.call(cbind, maps::map(plot = FALSE)[1:2])
 #' pts <- pts[!is.na(pts[,1]), ]
 #' pts <- pts[seq(1, nrow(pts), length.out = 8000), ]
 #' sf <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(pts), crs = "OGC:CRS84"))
@@ -54,8 +61,7 @@
 #'   geom_sf(data = sf::st_transform(sf, "EPSG:3577"), fill = NA, col = "yellow", pch = ".")
 #' pts3 <- pts[ pts[,2] < -20, ]
 #' sf <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(pts3), crs = "OGC:CRS84"))
-#' wms_arcgis_mapserver_tms <-
-#' "<GDAL_WMS><Service name=\"TMS\"><ServerUrl>http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${z}/${y}/${x}</ServerUrl></Service><DataWindow><UpperLeftX>-20037508.34</UpperLeftX><UpperLeftY>20037508.34</UpperLeftY><LowerRightX>20037508.34</LowerRightX><LowerRightY>-20037508.34</LowerRightY><TileLevel>17</TileLevel><TileCountX>1</TileCountX><TileCountY>1</TileCountY><YOrigin>top</YOrigin></DataWindow><Projection>EPSG:900913</Projection><BlockSizeX>256</BlockSizeX><BlockSizeY>256</BlockSizeY><BandsCount>3</BandsCount><MaxConnections>10</MaxConnections><Cache /></GDAL_WMS>"
+#' wms_arcgis_mapserver_tms <- arcgis_mapserver_imgery()
 #' ggplot() +
 #'   annotation_gdal(dsn = wms_arcgis_mapserver_tms, resample ="lanczos") +
 #'   geom_sf(data = sf::st_transform(sf, "EPSG:3031"), fill = NA, col = "hotpink", pch = 19, cex = 0.2)

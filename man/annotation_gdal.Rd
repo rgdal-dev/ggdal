@@ -3,12 +3,15 @@
 \docType{data}
 \name{annotation_gdal}
 \alias{annotation_gdal}
+\alias{arcgis_mapserver_imgery}
 \alias{GeomGdal}
 \title{Add background imagery}
 \format{
 An object of class \code{GeomGdal} (inherits from \code{Geom}, \code{ggproto}, \code{gg}) of length 5.
 }
 \usage{
+arcgis_mapserver_imgery()
+
 annotation_gdal(
   dsn = c("osm", "virtualearth"),
   resample = "bilinear",
@@ -22,6 +25,8 @@ GeomGdal
 }
 \arguments{
 \item{dsn}{The map source (currently 'osm' or 'virtualearth' are built-in - whatarelief streetmap, or imagery, otherwise use a GDAL DSN)}
+
+\item{resample}{resample algorithm for the GDAL warper}
 
 \item{interpolate}{Passed to \code{\link[grid:grid.raster]{grid::rasterGrob()}}}
 
@@ -53,7 +58,7 @@ ggplot() +
   geom_sf(data = iw, fill = NA, col = "grey50")
 
 
-pts <- do.call(cbind, maps::map(plot = F)[1:2])
+pts <- do.call(cbind, maps::map(plot = FALSE)[1:2])
 pts <- pts[!is.na(pts[,1]), ]
 pts <- pts[seq(1, nrow(pts), length.out = 8000), ]
 sf <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(pts), crs = "OGC:CRS84"))
@@ -68,8 +73,7 @@ ggplot() +
   geom_sf(data = sf::st_transform(sf, "EPSG:3577"), fill = NA, col = "yellow", pch = ".")
 pts3 <- pts[ pts[,2] < -20, ]
 sf <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(pts3), crs = "OGC:CRS84"))
-wms_arcgis_mapserver_tms <-
-"<GDAL_WMS><Service name=\"TMS\"><ServerUrl>http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${z}/${y}/${x}</ServerUrl></Service><DataWindow><UpperLeftX>-20037508.34</UpperLeftX><UpperLeftY>20037508.34</UpperLeftY><LowerRightX>20037508.34</LowerRightX><LowerRightY>-20037508.34</LowerRightY><TileLevel>17</TileLevel><TileCountX>1</TileCountX><TileCountY>1</TileCountY><YOrigin>top</YOrigin></DataWindow><Projection>EPSG:900913</Projection><BlockSizeX>256</BlockSizeX><BlockSizeY>256</BlockSizeY><BandsCount>3</BandsCount><MaxConnections>10</MaxConnections><Cache /></GDAL_WMS>"
+wms_arcgis_mapserver_tms <- arcgis_mapserver_imgery()
 ggplot() +
   annotation_gdal(dsn = wms_arcgis_mapserver_tms, resample ="lanczos") +
   geom_sf(data = sf::st_transform(sf, "EPSG:3031"), fill = NA, col = "hotpink", pch = 19, cex = 0.2)
