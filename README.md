@@ -10,6 +10,8 @@
 
 The goal of ggdal is to get background image data for ggplot2.
 
+No futzing around with map tiles or zooms or other programs.
+
 ## Installation
 
 You can install the development version of ggdal from
@@ -51,6 +53,69 @@ ggplot() +
 ```
 
 <img src="man/figures/README-example-2.png" width="100%" />
+
+## fun
+
+For a bit of a lark, get your favourite dataset ‘x’ and run this code a
+few times.
+
+``` r
+laea <- function(x) {
+  bb <- sf::st_bbox(x)
+  sf::st_transform(x, sprintf("+proj=laea +lon_0=%f lat_0=%f", mean(bb[c(1, 3)]),   mean(bb[c(2, 3)])))
+}
+x <- sf::read_sf("https://datahub.io/core/geo-countries/r/countries.geojson")
+ggplot() + 
+  annotation_gdal(sample(c("osm", "virtualearth", arcgis_mapserver_imgery()), 1)) + 
+  geom_sf(data = laea(sf::st_convex_hull(dplyr::sample_n(x, 1))), fill = NA)
+```
+
+<img src="man/figures/README-fun-1.png" width="100%" />
+
+``` r
+
+ggplot() + 
+  annotation_gdal(sample(c("osm", "virtualearth", arcgis_mapserver_imgery()), 1)) + 
+  geom_sf(data = laea(sf::st_convex_hull(dplyr::sample_n(x, 1))), fill = NA)
+```
+
+<img src="man/figures/README-fun-2.png" width="100%" />
+
+``` r
+
+ggplot() + 
+  annotation_gdal(sample(c("osm", "virtualearth", arcgis_mapserver_imgery()), 1)) + 
+  geom_sf(data = laea(sf::st_convex_hull(dplyr::sample_n(x, 1))), fill = NA)
+```
+
+<img src="man/figures/README-fun-3.png" width="100%" />
+
+``` r
+
+ggplot() + 
+  annotation_gdal(sample(c("osm", "virtualearth", arcgis_mapserver_imgery()), 1)) + 
+  geom_sf(data = laea(sf::st_convex_hull(dplyr::sample_n(x, 1))), fill = NA)
+```
+
+<img src="man/figures/README-fun-4.png" width="100%" />
+
+``` r
+
+ggplot() + 
+  annotation_gdal(sample(c("osm", "virtualearth", arcgis_mapserver_imgery()), 1)) + 
+  geom_sf(data = laea(sf::st_convex_hull(dplyr::sample_n(x, 1))), fill = NA)
+```
+
+<img src="man/figures/README-fun-5.png" width="100%" />
+
+``` r
+
+ggplot() + 
+  annotation_gdal(sample(c("osm", "virtualearth", arcgis_mapserver_imgery()), 1)) + 
+  geom_sf(data = laea(sf::st_convex_hull(dplyr::sample_n(x, 1))), fill = NA)
+```
+
+<img src="man/figures/README-fun-6.png" width="100%" />
 
 ## Code of Conduct
 
