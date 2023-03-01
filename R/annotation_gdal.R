@@ -1,3 +1,20 @@
+.ideal_dim <- function(dimension = dev.size("px"), extent = c(0, 1, 0, 1)) {
+  rat <- diff(extent[1:2])/diff(extent[3:4])
+  if (rat < 1) {
+    width <- dimension[2L] * rat
+    height <- dimension[2L]
+  }
+  if (rat >= 1) {
+    width <- dimension[1L]
+    height <- dimension[1L]/rat
+  }
+  #dm <- as.integer(c(width, height))
+  #print(dm)
+  #print(diff(par("plt"))[c(1, 3)] * dm0)
+  as.integer(round(diff(par("plt"))[c(1, 3)] * c(width, height)))
+
+}
+
 .osm_streetmap <- function(user_agent = getOption("HTTPUserAgent")) {
   sprintf("<GDAL_WMS><Service name=\"TMS\"><ServerUrl>https://tile.openstreetmap.org/${z}/${x}/${y}.png</ServerUrl></Service><DataWindow><UpperLeftX>-20037508.34</UpperLeftX><UpperLeftY>20037508.34</UpperLeftY><LowerRightX>20037508.34</LowerRightX><LowerRightY>-20037508.34</LowerRightY><TileLevel>18</TileLevel><TileCountX>1</TileCountX><TileCountY>1</TileCountY><YOrigin>top</YOrigin></DataWindow><Projection>EPSG:3857</Projection><BlockSizeX>256</BlockSizeX><BlockSizeY>256</BlockSizeY><BandsCount>3</BandsCount><!--<UserAgent>%s</UserAgent>--><Cache /></GDAL_WMS>",
           user_agent)
@@ -112,16 +129,16 @@ GeomGdal <- ggplot2::ggproto(
     data, panel_params, coordinates,  interpolate = TRUE, alpha = 1
   ) {
 
+
     coord_crs <- sf::st_crs(panel_params$crs)
     ex <- c(panel_params$x_range, panel_params$y_range)
     prj <- coord_crs$wkt
 
 
     ## here we need the dims to be smart, just pivot on the aspect ratio to a constant size for now
-    dm <- as.integer(rep(min(dev.size("px")), 2L)) ## / facet_sqrt something something
-    rat <- diff(ex[1:2])/diff(ex[3:4])
-    dm <- dm * sort(c(rat, 1))
+    dm <- .ideal_dim(extent = ex)
     src <- NULL
+
     dsn <- as.character(data$dsn[[1L]])
     resample <- as.character(data$resample[[1L]])
     if (dsn == "osm") {
