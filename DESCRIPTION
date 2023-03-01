@@ -1,6 +1,6 @@
 Package: ggdal
 Title: GDAL Rendering for 'ggplot2'
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("Michael D.", "Sumner", , "mdsumner@gmail.com", role = c("aut", "cre"))
 Description: A 'ggplot2' extension that enables image grobs from GDAL data source strings
@@ -16,10 +16,7 @@ Imports:
     ggplot2,
     grDevices,
     grid,
-    palr,
-    rlang,
     scales,
-    vapour,
     whatarelief
 Depends: 
     R (>= 2.10)
