@@ -52,7 +52,8 @@ arcgis_mapserver_imgery <- function() {
 #' sf <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(pts), crs = "OGC:CRS84"))
 #' ggplot() +
 #'   annotation_gdal(dsn = "virtualearth") +
-#'   geom_sf(data = sf::st_transform(sf, "+proj=laea +lon_0=147 +lat_0=-42"), fill = NA, col = "yellow", pch = ".")
+#'   geom_sf(data = sf::st_transform(sf, "+proj=laea +lon_0=147 +lat_0=-42"),
+#'   fill = NA, col = "yellow", pch = ".")
 #'
 #' pts2 <- pts[pts[,1] > 50 & pts[,1] < 120 & pts[,2] < -20 & pts[,2] > -45, ]
 #' sf <- sf::st_sf(geom = sf::st_sfc(sf::st_multipoint(pts2), crs = "OGC:CRS84"))
