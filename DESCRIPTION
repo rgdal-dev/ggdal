@@ -2,9 +2,10 @@ Package: ggdal
 Title: GDAL Rendering for 'ggplot2'
 Version: 0.0.2
 Authors@R: 
-    person("Michael D.", "Sumner", , "mdsumner@gmail.com", role = c("aut", "cre"))
-Description: A 'ggplot2' extension that enables image grobs from GDAL data source strings
- (DSN) in 'ggplot2'. Ruthlessly ripped off from 'ggpath'. 
+    c(person("Michael D.", "Sumner", , "mdsumner@gmail.com", role = c("aut", "cre")), 
+      person("Dewey", "Dunnington", role = c("aut", "ctb"),   
+      comment = "wrote ggspatial::annotation_map_tile that was a key example for annotation_gdal to work from"))
+Description: A 'ggplot2' extension that enables image data from GDAL data sources (DSN).  
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: es

@@ -6,7 +6,7 @@
 \alias{ggdal-package}
 \title{ggdal: GDAL Rendering for 'ggplot2'}
 \description{
-A 'ggplot2' extension that enables image grobs from GDAL data source strings (DSN) in 'ggplot2'. Ruthlessly ripped off from 'ggpath'.
+A 'ggplot2' extension that enables image data from GDAL data sources (DSN).
 }
 \seealso{
 Useful links:
@@ -18,6 +18,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Michael D. Sumner \email{mdsumner@gmail.com}
+
+Authors:
+\itemize{
+  \item Dewey Dunnington (wrote ggspatial::annotation_map_tile that was a key example for annotation_gdal to work from) [contributor]
+}
 
 }
 \keyword{internal}
