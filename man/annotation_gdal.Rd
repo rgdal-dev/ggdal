@@ -3,15 +3,12 @@
 \docType{data}
 \name{annotation_gdal}
 \alias{annotation_gdal}
-\alias{arcgis_mapserver_imgery}
 \alias{GeomGdal}
 \title{Add background imagery}
 \format{
 An object of class \code{GeomGdal} (inherits from \code{Geom}, \code{ggproto}, \code{gg}) of length 5.
 }
 \usage{
-arcgis_mapserver_imgery()
-
 annotation_gdal(
   dsn = c("osm", "virtualearth"),
   resample = "bilinear",
@@ -24,7 +21,7 @@ annotation_gdal(
 GeomGdal
 }
 \arguments{
-\item{dsn}{The map source (currently 'osm' or 'virtualearth' are built-in - whatarelief streetmap, or imagery, otherwise use a GDAL DSN)}
+\item{dsn}{The map source (currently 'osm' or 'virtualearth' are built-in -streetmap, or imagery, otherwise use a GDAL DSN - see package {sds} for some helpers)}
 
 \item{resample}{resample algorithm for the GDAL warper}
 

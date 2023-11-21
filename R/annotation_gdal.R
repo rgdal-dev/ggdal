@@ -1,5 +1,6 @@
 .ideal_dim <- function(dimension = dev.size("px"), extent = c(0, 1, 0, 1)) {
   rat <- diff(extent[1:2])/diff(extent[3:4])
+  #print(paste("rat:", rat))
   if (rat < 1) {
     width <- dimension[2L] * rat
     height <- dimension[2L]
@@ -11,24 +12,15 @@
   #dm <- as.integer(c(width, height))
   #print(dm)
   #print(diff(par("plt"))[c(1, 3)] * dm0)
-  as.integer(round(diff(par("plt"))[c(1, 3)] * c(width, height)))
 
+  ## using plt is removing too much
+  #as.integer(round(diff(par("plt"))[c(1, 3)] * c(width, height)))
+  as.integer(c(width, height) * .95)
+  #c(dimension[1L], 0)
 }
 
-.osm_streetmap <- function(user_agent = getOption("HTTPUserAgent")) {
-  sprintf("<GDAL_WMS><Service name=\"TMS\"><ServerUrl>https://tile.openstreetmap.org/${z}/${x}/${y}.png</ServerUrl></Service><DataWindow><UpperLeftX>-20037508.34</UpperLeftX><UpperLeftY>20037508.34</UpperLeftY><LowerRightX>20037508.34</LowerRightX><LowerRightY>-20037508.34</LowerRightY><TileLevel>18</TileLevel><TileCountX>1</TileCountX><TileCountY>1</TileCountY><YOrigin>top</YOrigin></DataWindow><Projection>EPSG:3857</Projection><BlockSizeX>256</BlockSizeX><BlockSizeY>256</BlockSizeY><BandsCount>3</BandsCount><!--<UserAgent>%s</UserAgent>--><Cache /></GDAL_WMS>",
-          user_agent)
-}
 
-.virtualearth_imagery <- function() {
-  "<GDAL_WMS><Service name=\"VirtualEarth\"><ServerUrl>http://a${server_num}.ortho.tiles.virtualearth.net/tiles/a${quadkey}.jpeg?g=90</ServerUrl></Service><MaxConnections>4</MaxConnections><Cache/></GDAL_WMS>"
-}
 
-#' @export
-#' @name annotation_gdal
-arcgis_mapserver_imgery <- function() {
-  "<GDAL_WMS><Service name=\"TMS\"><ServerUrl>http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${z}/${y}/${x}</ServerUrl></Service><DataWindow><UpperLeftX>-20037508.34</UpperLeftX><UpperLeftY>20037508.34</UpperLeftY><LowerRightX>20037508.34</LowerRightX><LowerRightY>-20037508.34</LowerRightY><TileLevel>17</TileLevel><TileCountX>1</TileCountX><TileCountY>1</TileCountY><YOrigin>top</YOrigin></DataWindow><Projection>EPSG:900913</Projection><BlockSizeX>256</BlockSizeX><BlockSizeY>256</BlockSizeY><BandsCount>3</BandsCount><MaxConnections>10</MaxConnections><Cache /></GDAL_WMS>"
-}
 #' Add background imagery
 #'
 #' Uses OpenStreetMap or VirtualEarth to add background imagery, or a custom source via 'dsn'.
@@ -37,7 +29,7 @@ arcgis_mapserver_imgery <- function() {
 #' (e.g., "Copyright OpenStreetMap contributors" when using an
 #' OpenStreetMap-based tile set).  Ditto for VirtualEarth or any dsn you use.
 #'
-#' @param dsn The map source (currently 'osm' or 'virtualearth' are built-in - whatarelief streetmap, or imagery, otherwise use a GDAL DSN)
+#' @param dsn The map source (currently 'osm' or 'virtualearth' are built-in -streetmap, or imagery, otherwise use a GDAL DSN - see package {sds} for some helpers)
 #' @param interpolate Passed to [grid::rasterGrob()]
 #' @param alpha Use to make this layer semi-transparent
 #' @param resample resample algorithm for the GDAL warper
@@ -45,7 +37,7 @@ arcgis_mapserver_imgery <- function() {
 #'
 #' @return A ggplot2 layer
 #' @export
-#' @importFrom whatarelief imagery
+#' @importFrom vapour gdal_raster_image
 #' @importFrom scales alpha
 #' @importFrom grDevices as.raster rgb col2rgb
 #' @importFrom grid rasterGrob
@@ -142,20 +134,27 @@ GeomGdal <- ggplot2::ggproto(
     dsn <- as.character(data$dsn[[1L]])
     resample <- as.character(data$resample[[1L]])
     if (dsn == "osm") {
-      src <- .osm_streetmap()
+      src <- sds::wms_openstreetmap_tms()
     }
     if (dsn == "virtualearth") {
-      src <- .virtualearth_imagery()
+      src <- sds::wms_virtualearth()
     }
 
     ## the user has passed in a DSN
 
     if (is.null(src))  src <- dsn
-    img <- as.raster(whatarelief::imagery(source = src,
-                                          extent = ex, projection = prj, dimension = dm, resample = resample))
+    ## dm might have a zero in it, so we use the record attribute "dimension"
+    #print(paste("nr/nc:", dm[1]/dm[2]))
+    #print(paste("dm", dm))
+
+    #print(paste("px:", dev.size("px")))
+    dpix <- vapour::gdal_raster_image(src, target_ext  = ex, target_crs = prj, target_dim = dm, resample = resample)
+    img <- as.raster(matrix(dpix[[1L]], attr(dpix, "dimension")[2L], byrow = TRUE))
     if (alpha < 1) {
       img <- as.raster(matrix(scales::alpha(img, alpha = alpha), dm[2], byrow = TRUE))
     }
+    ## again, override the extent (so we can allow no extent to be passed in )
+    ex <- attr(dpix, "extent")
     corners <- data.frame(x = ex[1:2], y = ex[3:4])
 
     # transform corners to viewport cs

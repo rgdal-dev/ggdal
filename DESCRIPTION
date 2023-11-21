@@ -18,11 +18,12 @@ Imports:
     grDevices,
     grid,
     scales,
-    whatarelief
+    sds,
+    vapour (>= 0.9.5)
 Depends: 
     R (>= 2.10)
 LazyData: true
-Remotes: hypertidy/whatarelief
+Remotes: hypertidy/sds
 Suggests: 
     maps,
     sf
