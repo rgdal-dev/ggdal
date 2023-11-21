@@ -1,6 +1,6 @@
 Package: ggdal
 Title: GDAL Rendering for 'ggplot2'
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: 
     c(person("Michael D.", "Sumner", , "mdsumner@gmail.com", role = c("aut", "cre")), 
       person("Dewey", "Dunnington", role = c("aut", "ctb"),   
